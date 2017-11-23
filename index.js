@@ -10,6 +10,12 @@ const loadConfig = require('./src/util/loadConfig');
 const routes = require('./src/routes');
 
 const app = express();
+app.use(function(req, res, next) {
+  if (req.ip=="127.0.0.1")	//Solo proveniente de la misma maquina
+    next();
+  else
+    res.status(403).end('forbidden');
+});
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 middleware.call(app);

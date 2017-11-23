@@ -10,12 +10,6 @@ const loadConfig = require('./src/util/loadConfig');
 const routes = require('./src/routes');
 
 const app = express();
-app.use(function(req, res, next) {
-  if (req.ip=="127.0.0.1")	//Solo proveniente de la misma maquina
-    next();
-  else
-    res.status(403).end('forbidden');
-});
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 middleware.call(app);
@@ -30,7 +24,7 @@ const init = (args) => {
 
 	try {
 		const config = loadConfig(args);
-		app.listen(config.webPort || 3000);
+		app.listen(config.webPort || 3000, '127.0.0.1');
 		routes(app, config);
 	} catch(err) {
 		vorpal.log(err.message);
@@ -58,4 +52,3 @@ vorpal.command('_start')
 vorpal.log('  MailIt SMTP API');
 vorpal.exec(`_start ${process.argv.slice(2).join(' ')}`);
 vorpal.delimiter(chalk.cyan('Mail') + chalk.grey('It:'));
-
